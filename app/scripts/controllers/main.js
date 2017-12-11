@@ -8,6 +8,8 @@
  * Controller of the spectrometerApp
  */
 angular.module('spectrometerApp')
-  .controller('MainCtrl', function () {
+  .controller('MainCtrl', ['spectrData', function (spectrdata) {
 
-  });
+    this.data = spectrdata.someMethod();
+    console.log(this.data);
+}]);
