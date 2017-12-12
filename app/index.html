@@ -50,7 +50,7 @@
 
     <div class="container">
 
-  <div ng-include="'views/main.html'" ng-controller="MainCtrl"></div>
+  <div ng-include="'views/main.html'" ng-controller="MainCtrl as main"></div>
     </div>
 
     <div class="footer">
@@ -67,7 +67,6 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/angular-websocket/dist/angular-websocket.js"></script>
-
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -75,6 +74,7 @@
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/services/spectrdata.js"></script>
+        <script src="scripts/directives/barschart.js"></script>
         <!-- endbuild -->
 </body>
 </html>
