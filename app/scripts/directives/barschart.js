@@ -26,9 +26,9 @@ angular.module('spectrometerApp')
 
             svg.style('width', '100%').style('height', '100%');
             var x = d3.scaleLinear()
-                  .range([0, width]);
+                  .rangeRound([0, width]);
             var y = d3.scaleLinear()
-                  .range([height, 0]).domain([0, 500]);
+                  .rangeRound([height, 0]).domain([0, 500]);
 
             var g = svg.append("g")
               .attr("transform", "translate("+margin.left+","+margin.top+")");
@@ -41,38 +41,61 @@ angular.module('spectrometerApp')
             x_axis.call(d3.axisBottom(x));
             y_axis.call(d3.axisLeft(y).ticks(10));
 
+            var valueline = d3.line()
+              .x(function(d) { return x(d.channel); })
+              .y(function(d) { return y(d.signal); })
+              .curve(d3.curveBasis);;
+
+
             var bars = g.selectAll(".bar");
+            var line = g.append("path")
+                              .attr("fill", "none")
+                              .attr("stroke", "OrangeRed")
+                              .attr("stroke-linejoin", "round")
+                              .attr("stroke-linecap", "round")
+                              .attr("stroke-width", 1.5);
+
             var initialized = false;
             var scalestep = 100;
 
+            var olddata = {};
             scope.$watch(attrs.data, function(newdata) {
              if (newdata){
-             var data = [];
-              Object.keys(newdata).forEach(function(key){
-              if (key.length<2){
-                data.push({channel : scope.channels[key], signal : +newdata[key]});
-              }
-              });
+                 var data = [];
+                 Object.keys(newdata).forEach(function(key){
+                      if (key.length<2){
+
+                        data.push({channel : scope.channels[key], signal : +newdata[key]});
+                      }
+                  });
+
+                  olddata = newdata;
+
+                  x.domain([d3.min(data, function(d) { return d.channel;})-40,
+                            d3.max(data, function(d) { return d.channel;})+40]);
+                  y.domain([0, Math.ceil(d3.max(data, function(d) { return d.signal+1; })/scalestep)*scalestep]);
+                  x_axis.transition().duration(300).call(d3.axisBottom(x));
+                  y_axis.transition().duration(300).call(d3.axisLeft(y).ticks(4));
 
 
-              x.domain([d3.min(data, function(d) { return d.channel;})-40,
-                        d3.max(data, function(d) { return d.channel;})+40]);
-              y.domain([0, Math.ceil(d3.max(data, function(d) { return d.signal+1; })/scalestep)*scalestep]);
-              x_axis.transition().duration(300).call(d3.axisBottom(x));
-              y_axis.transition().duration(300).call(d3.axisLeft(y).ticks(4));
 
-              var bars = g.selectAll(".bar").data(data, function(d) { return d.channel;});
+                  var bars = g.selectAll(".bar").data(data, function(d) { return d.channel;});
 
-              bars.enter().append("rect")
-                  .attr("class", "bar")
-                  .attr("y", y(0))
-                  .attr("height", height - y(0));
-              bars.transition().duration(300)
-                .attr("x", function(d) {return x(d.channel);})
-                .attr("width", x(680) - x(660))
-                .attr("y", function(d) { return y(d.signal);})
-                .attr("height", function(d) { return height - y(d.signal);});
+                  bars.enter().append("rect")
+                      .attr("class", "bar")
+                      .attr("y", y(0))
+                      .attr("height", height - y(0));
+                  bars.transition().duration(300)
+                    .attr('opacity', 0.5)
+                    .attr("x", function(d) {return x(d.channel-10);})
+                    .attr("width", x(680) - x(660))
+                    .attr("y", function(d) { return y(d.signal);})
+                    .attr("height", function(d) { return height - y(d.signal);});
 
+                  line.datum(data)
+                    .transition()
+                    .duration(300)
+                    .attr("d", valueline(data));
               }
             }, true);
          }

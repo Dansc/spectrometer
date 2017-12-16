@@ -20,14 +20,14 @@ angular.module('spectrometerApp')
       var data = JSON.parse(message.data);
       var match;
       data.replace(rePattern, function(match, g1, g2) {
-        result[g1] = g2;
+        result[g1] = +g2;
          });
         result['tempC'] = 5*(result.tempF-32)/9;
         result.tempC = result.tempC.toFixed(1);
-        collection.push(result);
-        if (collection.length > max_length){
-          collection.splice(0, 1);
-        };
+        // collection.push(result);
+        // if (collection.length > max_length){
+        //   collection.splice(0, 1);
+        // };
       });
 
     // Public API here

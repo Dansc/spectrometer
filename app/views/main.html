@@ -1,13 +1,11 @@
 
 <p>Sensor Temperature: {{data.tempC}}</p>
-<div class="jumbotron">
+
 <form ng-submit="main.submit(text)">
   Enter text and hit enter:
   <input type="text" ng-model="text" name="text" />
   <input type="submit" id="submit" value="Submit" />
 </form>
-
-</div>
 
 <div class="container" style="height: 50vh; width: 80vw; margin: 0 auto;">
 <bars-chart style="height: 400px; width: 500px"
