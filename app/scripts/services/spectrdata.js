@@ -8,29 +8,23 @@
  * Factory in the spectrometerApp.
  */
 angular.module('spectrometerApp')
-  .factory('spectrData', function ($websocket) {
+  .factory('spectrData', function ($websocket, $rootScope) {
 
     var dataStream = $websocket('ws://localhost:8081');
 
     var collection = [];
+    var result = {};
     var max_length = 50;
     var rePattern = /([a-zA-Z]+)\[(\d+.\d+)\]/g;
     dataStream.onMessage(function(message) {
       var data = JSON.parse(message.data);
       var match;
-      var result = {}
       data.replace(rePattern, function(match, g1, g2) {
         result[g1] = g2;
          });
-         console.log(result);
-      // while(match = rePattern.exec(data)){
-      //   console.log(match[1]);
-      // };
-
-      //  console.log("Found", match[1], "at", match.index);
-
-
-        collection.push(JSON.parse(message.data));
+        result['tempC'] = 5*(result.tempF-32)/9;
+        result.tempC = result.tempC.toFixed(1);
+        collection.push(result);
         if (collection.length > max_length){
           collection.splice(0, 1);
         };
@@ -39,9 +33,9 @@ angular.module('spectrometerApp')
     // Public API here
     var methods = {
          collection: collection,
-         get: function(d) {
+         result: result,
+         send: function(d) {
            dataStream.send(d);
-           //dataStream.send(JSON.stringify({ action: 'get' }));
          }
        };
 
