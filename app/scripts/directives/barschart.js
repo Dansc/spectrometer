@@ -56,7 +56,7 @@ angular.module('spectrometerApp')
                               .attr("stroke-width", 1.5);
 
             var initialized = false;
-            var scalestep = 100;
+            var scalestep = 10;
 
             var olddata = {};
             scope.$watch(attrs.data, function(newdata) {

@@ -1,10 +1,37 @@
 
 <p>Sensor Temperature: {{data.tempC}}</p>
 
-<form ng-submit="main.submit(text)">
-  Enter text and hit enter:
-  <input type="text" ng-model="text" name="text" />
-  <input type="submit" id="submit" value="Submit" />
+<form ng-submit="main.submit(main.settings)" ng-model="main.settings">
+    <p>
+    White Bulb <input type="checkbox" name="Bulb"
+             ng-model="main.settings.bulb">
+  </p>
+  <p>
+    Bulb current <input type="range"
+                  style="width: 80px"
+                  ng-model="main.settings.current"
+                  value = "0"
+                  min="0" max="3" step="1">
+  </p>
+  <p>
+    Blue LED <input type="checkbox" name="blueLED"
+             ng-model="main.settings.blueLED">
+  </p>
+  <p>
+    Gain: {{main.settings.gain}} <input type="range"
+    style="width: 80px"
+    ng-model="main.settings.gain"
+    min="0" max="3" step="1">
+  </p>
+  <p>
+    Integration time: {{main.settings.tc}} <input type="range"
+    style="width: 80px"
+    ng-model="main.settings.tc"
+    name="points" min="0" max="255" step="1">
+  </p>
+
+  <p><input type="submit" id="submit" value="Submit" /></p>
+
 </form>
 
 <div class="container" style="height: 50vh; width: 80vw; margin: 0 auto;">
